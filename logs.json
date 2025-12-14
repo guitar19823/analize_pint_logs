@@ -1,0 +1,997 @@
+[
+  {
+    "dateTime": "2025-12-11:17-52-48-125",
+    "name": "checkAtollLocalSession",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-52-48-125",
+    "name": "connectAndGetFNData",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-52-48-125",
+    "name": "checkConnection",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-52-48-147",
+    "name": "checkConnection",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-52-48-147",
+    "name": "isConneced",
+    "value": "false"
+  },
+  {
+    "dateTime": "2025-12-11:17-52-48-147",
+    "name": "connect",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-52-49-878",
+    "name": "connect",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-52-49-878",
+    "name": "getFNData",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-52-51-943",
+    "name": "getFNData",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-52-51-943",
+    "name": "connectAndGetFNData",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-52-51-943",
+    "name": "getAtolDateTime",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-52-52-009",
+    "name": "getAtolDateTime",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-52-52-009",
+    "name": "getSessionState",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-52-52-094",
+    "name": "getSessionState",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-52-52-094",
+    "name": "checkAtollLocalSession",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-05-403",
+    "name": "printReceipt",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-05-403",
+    "name": "checkConnection",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-05-423",
+    "name": "checkConnection",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-05-423",
+    "name": "isConneced",
+    "value": "true"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-05-690",
+    "name": "fnQueryData",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-10-465",
+    "name": "fnQueryData",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-10-465",
+    "name": "checkIfFFDIsNew",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-10-475",
+    "name": "checkIfFFDIsNew",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-10-475",
+    "name": "checkIsAtolNewFirmwareVersion",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-10-761",
+    "name": "checkIsAtolNewFirmwareVersion",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-10-762",
+    "name": "getValidationResults",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-10-762",
+    "name": "validateKM 0",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-11-588",
+    "name": "validateKM 0",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-11-589",
+    "name": "validateKM 1",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-12-333",
+    "name": "validateKM 1",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-12-333",
+    "name": "validateKM 2",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-12-335",
+    "name": "validateKM 2",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-12-340",
+    "name": "validateKM 3",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-13-185",
+    "name": "validateKM 3",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-13-185",
+    "name": "validateKM 4",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-13-185",
+    "name": "validateKM 4",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-13-185",
+    "name": "validateKM 5",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-13-185",
+    "name": "validateKM 5",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-13-185",
+    "name": "getValidationResults",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-13-185",
+    "name": "checkAndPushClicheToAtol",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-13-364",
+    "name": "checkAndPushClicheToAtol",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-13-365",
+    "name": "openDocument",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-13-365",
+    "name": "openFiscalDocument",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-223",
+    "name": "openFiscalDocument",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-270",
+    "name": "openDocument",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-270",
+    "name": "addReceiptNumbersToDocument",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-753",
+    "name": "addReceiptNumbersToDocument",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-753",
+    "name": "printReceiptData",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-753",
+    "name": "addPositions",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-762",
+    "name": "addPosition",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-763",
+    "name": "M8205927 Ботинки мужские зимние WB2023AW-M125 Размер 41",
+    "value": "2736"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-763",
+    "name": "getAgentForm",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-766",
+    "name": "getAgentForm",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-766",
+    "name": "getSuplierInfo",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-771",
+    "name": "getSuplierInfo",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-771",
+    "name": "getIndustryInfo",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-776",
+    "name": "getIndustryInfo",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-776",
+    "name": "setAdditionParamsForFinsevice",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-777",
+    "name": "setAdditionParamsForFinsevice",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-777",
+    "name": "setPositionAttributes",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-779",
+    "name": "setPositionAttributes",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-779",
+    "name": "setParamsForNewFFD",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-785",
+    "name": "setParamsForNewFFD",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-15-786",
+    "name": "registration",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-422",
+    "name": "registration",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-422",
+    "name": "setDiscounts",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-562",
+    "name": "setDiscounts",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-562",
+    "name": "setProperties",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-593",
+    "name": "setProperties",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-593",
+    "name": "addPosition",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-643",
+    "name": "addPosition",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-643",
+    "name": "S8859021 Дутые сапоги/валенки детские для мальчиков WB20AW-01 Размер 20",
+    "value": "344"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-644",
+    "name": "getAgentForm",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-653",
+    "name": "getAgentForm",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-653",
+    "name": "getSuplierInfo",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-661",
+    "name": "getSuplierInfo",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-661",
+    "name": "getIndustryInfo",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-666",
+    "name": "getIndustryInfo",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-670",
+    "name": "setAdditionParamsForFinsevice",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-670",
+    "name": "setAdditionParamsForFinsevice",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-670",
+    "name": "setPositionAttributes",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-672",
+    "name": "setPositionAttributes",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-672",
+    "name": "setParamsForNewFFD",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-676",
+    "name": "setParamsForNewFFD",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-17-676",
+    "name": "registration",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-460",
+    "name": "registration",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-461",
+    "name": "setDiscounts",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-544",
+    "name": "setDiscounts",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-544",
+    "name": "setProperties",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-591",
+    "name": "setProperties",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-591",
+    "name": "addPosition",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-618",
+    "name": "addPosition",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-618",
+    "name": "55607130 Шарф детский для мальчиков B13089-2 Размер 7-12",
+    "value": "313"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-618",
+    "name": "getAgentForm",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-626",
+    "name": "getAgentForm",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-627",
+    "name": "getSuplierInfo",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-631",
+    "name": "getSuplierInfo",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-632",
+    "name": "getIndustryInfo",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-632",
+    "name": "getIndustryInfo",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-633",
+    "name": "setAdditionParamsForFinsevice",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-633",
+    "name": "setAdditionParamsForFinsevice",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-633",
+    "name": "setPositionAttributes",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-635",
+    "name": "setPositionAttributes",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-635",
+    "name": "setParamsForNewFFD",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-635",
+    "name": "setParamsForNewFFD",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-635",
+    "name": "registration",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-848",
+    "name": "registration",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-848",
+    "name": "setDiscounts",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-945",
+    "name": "setDiscounts",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-945",
+    "name": "setProperties",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-960",
+    "name": "setProperties",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-960",
+    "name": "addPosition",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-973",
+    "name": "addPosition",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-973",
+    "name": "b9309090 Носки женские утепленные A91087 Размер 36-41",
+    "value": "313"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-973",
+    "name": "getAgentForm",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-977",
+    "name": "getAgentForm",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-977",
+    "name": "getSuplierInfo",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-981",
+    "name": "getSuplierInfo",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-981",
+    "name": "getIndustryInfo",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-986",
+    "name": "getIndustryInfo",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-986",
+    "name": "setAdditionParamsForFinsevice",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-986",
+    "name": "setAdditionParamsForFinsevice",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-986",
+    "name": "setPositionAttributes",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-988",
+    "name": "setPositionAttributes",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-988",
+    "name": "setParamsForNewFFD",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-994",
+    "name": "setParamsForNewFFD",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-18-994",
+    "name": "registration",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-358",
+    "name": "registration",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-358",
+    "name": "setDiscounts",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-467",
+    "name": "setDiscounts",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-467",
+    "name": "setProperties",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-531",
+    "name": "setProperties",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-531",
+    "name": "addPosition",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-562",
+    "name": "addPosition",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-562",
+    "name": "27424893 Пакет 50x55 ",
+    "value": "8"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-562",
+    "name": "getAgentForm",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-565",
+    "name": "getAgentForm",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-565",
+    "name": "getSuplierInfo",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-578",
+    "name": "getSuplierInfo",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-578",
+    "name": "getIndustryInfo",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-579",
+    "name": "getIndustryInfo",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-579",
+    "name": "setAdditionParamsForFinsevice",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-579",
+    "name": "setAdditionParamsForFinsevice",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-579",
+    "name": "setPositionAttributes",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-579",
+    "name": "setPositionAttributes",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-580",
+    "name": "setParamsForNewFFD",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-580",
+    "name": "setParamsForNewFFD",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-580",
+    "name": "registration",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-736",
+    "name": "registration",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-736",
+    "name": "setDiscounts",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-739",
+    "name": "setDiscounts",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-739",
+    "name": "setProperties",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-795",
+    "name": "setProperties",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-798",
+    "name": "addPosition",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-816",
+    "name": "addPosition",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-817",
+    "name": "31506000 Подвеска A83344 ",
+    "value": "1"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-817",
+    "name": "getAgentForm",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-831",
+    "name": "getAgentForm",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-831",
+    "name": "getSuplierInfo",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-838",
+    "name": "getSuplierInfo",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-839",
+    "name": "getIndustryInfo",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-839",
+    "name": "getIndustryInfo",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-839",
+    "name": "setAdditionParamsForFinsevice",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-839",
+    "name": "setAdditionParamsForFinsevice",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-839",
+    "name": "setPositionAttributes",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-844",
+    "name": "setPositionAttributes",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-844",
+    "name": "setParamsForNewFFD",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-845",
+    "name": "setParamsForNewFFD",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-845",
+    "name": "registration",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-998",
+    "name": "registration",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-19-998",
+    "name": "setDiscounts",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-20-129",
+    "name": "setDiscounts",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-20-129",
+    "name": "setProperties",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-20-150",
+    "name": "setProperties",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-20-151",
+    "name": "addPosition",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-20-167",
+    "name": "addPositions",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-20-167",
+    "name": "setDiscounts",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-20-589",
+    "name": "setDiscounts",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-20-590",
+    "name": "printReceiptInfo",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-20-591",
+    "name": "printBarcode",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-20-933",
+    "name": "printBarcode",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-20-933",
+    "name": "printSlipInReceipt",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-21-785",
+    "name": "printSlipInReceipt",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-21-785",
+    "name": "printPromo",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-22-459",
+    "name": "printPromo",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-22-460",
+    "name": "printReceiptInfo",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-22-460",
+    "name": "addNotifications",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-22-525",
+    "name": "addNotifications",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-22-525",
+    "name": "addPayments",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-22-556",
+    "name": "addPayments",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-22-863",
+    "name": "printReceiptData",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-22-864",
+    "name": "closeFiscalDocument",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-23-841",
+    "name": "closeFiscalDocument",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-23-842",
+    "name": "printReceipt",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-23-842",
+    "name": "addFiscalDataToDocument",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-25-388",
+    "name": "addFiscalDataToDocument",
+    "value": "end"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-27-963",
+    "name": "isAtolOpenConnectionModeEnabled",
+    "value": "false"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-27-963",
+    "name": "disconnect",
+    "value": "start"
+  },
+  {
+    "dateTime": "2025-12-11:17-53-28-085",
+    "name": "disconnect",
+    "value": "end"
+  }
+]

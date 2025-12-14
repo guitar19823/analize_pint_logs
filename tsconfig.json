@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "declaration": true,
+    "outDir": "dist/esm",
+    "rootDir": "src",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "Bundler",
+    "types": [
+      "node"
+    ],
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}

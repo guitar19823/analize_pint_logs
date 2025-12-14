@@ -1,0 +1,30 @@
+{
+  "name": "analize-print-logs",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Yarikov A.K.",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "rimraf dist/main.js && tsc src/main.ts --outDir dist && node dist/main.js",
+    "dev": "tsc -w src/main.ts --outDir dist && node dist/main.js"
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "node": "^24.12.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.2",
+    "rimraf": "^6.1.2",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guitar19823/analize_pint_logs.git"
+  }
+}
