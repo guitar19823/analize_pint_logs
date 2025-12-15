@@ -49,11 +49,13 @@ export class ProcessTUI {
           this.controller.collapse();
           break;
 
-        case "\x1A":
+        case "\x1b[1;5C":
+        case "\x1b[5C":
           this.controller.expandAll();
           break;
 
-        case "\x18":
+        case "\x1b[1;5D":
+        case "\x1b[5D":
           this.controller.collapseAll();
           break;
 

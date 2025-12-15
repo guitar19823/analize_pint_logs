@@ -63,3 +63,14 @@ export const BODY_ROW = {
   left: Border.vr,
   center: Border.vr,
 };
+
+export const Command = new Map([
+  ['[↑] Вверх', '\x1b[A'],
+  ['[↓] Вниз', '\x1b[B'],
+  ['[→] Раскрыть', '\x1b[B'],
+  ['[←] Свернуть', '\x1b[B'],
+  ['[Ctrl+→] Раскрыть всё', '\x1b[B'],
+  ['[Ctrl+←] Свернуть всё', '\x1b[B'],
+  ['[Ctrl+S] Экспорт', '\x1b[B'],
+  ['[Esc] Выход', '\x1b[B'],
+]);

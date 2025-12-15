@@ -1,3 +1,4 @@
+import { Command } from "../config";
 import { FileManager } from "../services/FileManager";
 import { Table } from "../services/Table";
 import { Tree } from "../services/Tree";
@@ -65,6 +66,7 @@ export class TUIController {
     };
 
     traverse(this.tree.root);
+    this.selectedIndex = 1;
     this.render();
   };
 
@@ -78,6 +80,7 @@ export class TUIController {
     };
 
     traverse(this.tree.root);
+    this.selectedIndex = 1;
     this.render();
   };
 
@@ -100,5 +103,5 @@ export class TUIController {
   };
 
   private getHelpMessage = () =>
-    "\n[↑] Вверх,  [↓] Вниз,  [→] Раскрыть,  [←] Свернуть,  [Ctrl+Z] Раскрыть всё,  [Ctrl+X] Свернуть всё,  [Ctrl+S] Экспорт,  [Esc] Выход.\n";
+    `\n${[...Command.keys()].join()}\n`;
 }
