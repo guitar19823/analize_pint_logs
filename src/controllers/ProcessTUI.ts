@@ -69,6 +69,11 @@ export class ProcessTUI {
       }
     });
 
+    process.on('SIGWINCH', () => {
+      TerminalIO.checkResize();
+      this.controller.handleResize();
+    });
+
     process.on("SIGINT", () => {
       this.stop();
     });

@@ -12,28 +12,54 @@ export class TUIController {
   private selectedIndex: number = 1;
   private renderer = new Table();
   private fileManager = new FileManager();
+  private topLimit = 5;
+  private bottomLimit = 6;
+
+  private viewport = {
+    start: 0,
+    end: 0,
+    height: 0
+  };
 
   constructor(logs: LogEntry[]) {
     this.tree = new Tree(logs);
+    this.updateViewport();
   }
 
   public render = () => {
     this.table = this.renderer.render(this.tree.root, this.selectedIndex);
 
+    const visibleTable = this.table.slice(
+      this.viewport.start,
+      this.viewport.end
+    );
+
     TerminalIO.clear();
-    TerminalIO.write(this.table.join("\n") + this.getHelpMessage());
+    TerminalIO.write(visibleTable.join("\n") + this.getHelpMessage());
   };
 
   public moveUp = () => {
     if (this.selectedIndex > 1) {
       this.selectedIndex--;
+
+      if (this.selectedIndex <= this.viewport.start) {
+        this.viewport.start--;
+        this.viewport.end--;
+      }
+
       this.render();
     }
   };
 
   public moveDown = () => {
-    if (this.selectedIndex < this.table.length - 6) {
+    if (this.selectedIndex < this.table.length - this.bottomLimit) {
       this.selectedIndex++;
+
+      if (this.selectedIndex >= this.viewport.end - this.bottomLimit) {
+        this.viewport.start++;
+        this.viewport.end++;
+      }
+      
       this.render();
     }
   };
@@ -66,7 +92,11 @@ export class TUIController {
     };
 
     traverse(this.tree.root);
+    
     this.selectedIndex = 1;
+    this.viewport.start = 0;
+    this.viewport.end = this.viewport.height;
+
     this.render();
   };
 
@@ -80,7 +110,11 @@ export class TUIController {
     };
 
     traverse(this.tree.root);
+
     this.selectedIndex = 1;
+    this.viewport.start = 0;
+    this.viewport.end = this.viewport.height;
+
     this.render();
   };
 
@@ -102,6 +136,20 @@ export class TUIController {
     );
   };
 
+  public handleResize = () => {
+    this.updateViewport();
+    this.render();
+  }
+
+  private updateViewport = () => {
+    const size = TerminalIO.getSize();
+
+    if (size) {
+      this.viewport.height = size.rows - this.topLimit;
+      this.viewport.end = this.viewport.start + this.viewport.height;
+    }
+  }
+
   private getHelpMessage = () =>
-    `\n${[...Command.keys()].join()}\n`;
+    `\n\n${[...Command.keys()].join(",  ")}\n`;
 }

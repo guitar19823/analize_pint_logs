@@ -1,4 +1,21 @@
 export class TerminalIO {
+  private static sizeListeners: ((size: { columns: number; rows: number }) => void)[] = [];
+
+  static onResize(callback: (size: { columns: number; rows: number }) => void): void {
+    this.sizeListeners.push(callback);
+  }
+
+  static removeResizeListener(callback: (size: { columns: number; rows: number }) => void): void {
+    this.sizeListeners = this.sizeListeners.filter(cb => cb !== callback);
+  }
+
+  static checkResize(): void {
+    const size = this.getSize();
+    if (size) {
+      this.sizeListeners.forEach(listener => listener(size));
+    }
+  }
+
   /**
    * Полная очистка терминала (экран + буфер прокрутки)
    */

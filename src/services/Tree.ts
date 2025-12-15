@@ -49,7 +49,7 @@ export class Tree {
     for (const log of logs) {
       if (log.value === "start") {
         this.handleStartLog(log, stack);
-      } else if (log.value === "end") {
+      } else if (log.value === "end" || log.value === "error") {
         this.handleEndLog(log, stack);
       } else {
         this.handleOtherLog(log, stack);

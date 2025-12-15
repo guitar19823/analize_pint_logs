@@ -14,8 +14,10 @@ import { flattenTree } from "../utils/flattenTree";
 
 export class Table {
   public selectedNode: Node | null = null;
+  private terminalWidth = 80;
 
   public render(tree: Node[], selectedIndex: number) {
+    this.terminalWidth = TerminalIO.getSize()?.columns || 80;
     const lines: string[] = [];
     const flatNodes = flattenTree(tree);
 
@@ -62,6 +64,8 @@ export class Table {
         lines.push(this.getTableRow(cells, BODY_ROW));
     }
   };
+
+  private trimRow = (row: string) => row.substring(0, this.terminalWidth)
 
   private getName = (node: Node, isSelected: boolean) => {
     const toggle = node.isExpanded ? Symbol.collapse : Symbol.expand;
