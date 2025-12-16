@@ -41,6 +41,14 @@ export class ProcessTUI {
           this.controller.moveDown();
           break;
 
+        case "\x1b[5~":
+          this.controller.moveUp(5);
+          break;
+
+        case "\x1b[6~":
+          this.controller.moveDown(5);
+          break;
+
         case "\x1b[C":
           this.controller.expand();
           break;
@@ -69,7 +77,7 @@ export class ProcessTUI {
       }
     });
 
-    process.on('SIGWINCH', () => {
+    process.on("SIGWINCH", () => {
       TerminalIO.checkResize();
       this.controller.handleResize();
     });
