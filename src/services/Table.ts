@@ -8,16 +8,19 @@ import {
   BODY_ROW,
   Symbol,
 } from "../config";
-import { TerminalIO } from "../controllers/TerminalIO";
+import { TerminalIO } from "./TerminalIO";
 import { Node, RowType } from "../types";
 import { flattenTree } from "../utils/flattenTree";
 
 export class Table {
   public selectedNode: Node | null = null;
-  private terminalWidth = 80;
+  public headerSize = 0;
+  public footerSize = 0;
+  public numberOfBodyBorders = 0;
+  public borderSize = 1;
 
   public render(tree: Node[], selectedIndex: number) {
-    this.terminalWidth = TerminalIO.getSize()?.columns || 80;
+    this.numberOfBodyBorders = 0;
     const lines: string[] = [];
     const flatNodes = flattenTree(tree);
 
@@ -45,15 +48,29 @@ export class Table {
 
     switch (true) {
       case node.rowType === RowType.HEADER:
-        lines.push(this.getTableBorder(cells, BORDER_TOP));
-        lines.push(this.getTableRow(cells, HEADER_ROW) + Color.RESET);
-        lines.push(this.getTableBorder(cells, BORDER_MIDDLE));
+        const header = [
+          this.getTableBorder(cells, BORDER_TOP),
+          this.getTableRow(cells, HEADER_ROW) + Color.RESET,
+          this.getTableBorder(cells, BORDER_MIDDLE),
+        ];
+
+        this.headerSize = header.length;
+        this.numberOfBodyBorders++;
+
+        lines.push(...header)
         break;
 
       case node.rowType === RowType.FOOTER:
-        lines.push(this.getTableBorder(cells, BORDER_MIDDLE));
-        lines.push(this.getTableRow(cells, BODY_ROW));
-        lines.push(this.getTableBorder(cells, BORDER_BOTTOM));
+        const footer = [
+          this.getTableBorder(cells, BORDER_MIDDLE),
+          this.getTableRow(cells, BODY_ROW),
+          this.getTableBorder(cells, BORDER_BOTTOM),
+        ];
+
+        this.footerSize = footer.length;
+        this.numberOfBodyBorders++;
+
+        lines.push(...footer)
         break;
 
       case isSelected && TerminalIO.isSupported():
@@ -64,8 +81,6 @@ export class Table {
         lines.push(this.getTableRow(cells, BODY_ROW));
     }
   };
-
-  private trimRow = (row: string) => row.substring(0, this.terminalWidth)
 
   private getName = (node: Node, isSelected: boolean) => {
     const toggle = node.isExpanded ? Symbol.collapse : Symbol.expand;

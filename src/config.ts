@@ -2,6 +2,7 @@ export const INDENT = 2;
 export const CURSOR_WIDTH = 3;
 export const TOGGLE_WIDTH = 2;
 export const PADDING = 1;
+export const REZERVED_SIZE = 5;
 
 // Цвета в формате ANSI
 export const enum Color {
@@ -74,3 +75,9 @@ export const Command = new Map([
   ['[Ctrl+S] Экспорт', '\x1b[B'],
   ['[Esc] Выход', '\x1b[B'],
 ]);
+
+export const enum NodeBoundary {
+  start = "start",
+  end = "end",
+  error = "error",
+}

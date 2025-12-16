@@ -1,4 +1,4 @@
-import { CURSOR_WIDTH, INDENT, PADDING, Symbol, TOGGLE_WIDTH } from "../config";
+import { CURSOR_WIDTH, INDENT, NodeBoundary, PADDING, Symbol, TOGGLE_WIDTH } from "../config";
 import { LogEntry, Node, RowType } from "../types";
 import { calculateDuration } from "../utils/date";
 
@@ -47,9 +47,9 @@ export class Tree {
     const stack: Node[] = [];
 
     for (const log of logs) {
-      if (log.value === "start") {
+      if (log.value === NodeBoundary.start) {
         this.handleStartLog(log, stack);
-      } else if (log.value === "end" || log.value === "error") {
+      } else if (log.value === NodeBoundary.end || log.value === NodeBoundary.error) {
         this.handleEndLog(log, stack);
       } else {
         this.handleOtherLog(log, stack);
@@ -117,7 +117,7 @@ export class Tree {
   private createNode = (log: LogEntry, depth: number, value = ""): Node => ({
     index: this.currentIndex++,
     name: log.name,
-    start: log.value === "start" ? log.dateTime : "",
+    start: log.value === NodeBoundary.start ? log.dateTime : "",
     end: "",
     duration: "",
     value,
@@ -179,7 +179,9 @@ export class Tree {
         .padStart(this.widths.value + PADDING, Symbol.space)
         .padEnd(this.widths.value + PADDING * 2, Symbol.space);
 
-      this.addPads(it.children);
+      if (it.children.length) {
+        this.addPads(it.children);
+      }
     });
   };
 }

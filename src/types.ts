@@ -10,15 +10,20 @@ export const enum RowType {
   FOOTER,
 }
 
-export interface Node {
-  index: number;
+export interface CellNames {
   name: string;
   start: string;
   end: string;
   duration: string;
   value: string;
+}
+
+export interface Service {
+  index: number;
   children: Node[];
   isExpanded: boolean;
   depth: number;
   rowType: RowType;
 }
+
+export interface Node extends CellNames, Service {}

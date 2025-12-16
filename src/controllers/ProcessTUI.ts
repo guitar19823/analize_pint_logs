@@ -1,7 +1,7 @@
 import * as readline from "readline";
 import { TUIController } from "./TUIController";
 import { LogEntry } from "../types";
-import { TerminalIO } from "./TerminalIO";
+import { TerminalIO } from "../services/TerminalIO";
 
 export class ProcessTUI {
   private controller: TUIController;

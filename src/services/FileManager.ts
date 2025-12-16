@@ -1,6 +1,6 @@
 import * as fs from "fs/promises";
 import { LogEntry } from "../types";
-import { TerminalIO } from "../controllers/TerminalIO";
+import { TerminalIO } from "./TerminalIO";
 
 export class FileManager {
   public read = async (filePath: string): Promise<LogEntry[]> => {

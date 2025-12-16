@@ -1,4 +1,4 @@
-import { Command } from "../config";
+import { Command, REZERVED_SIZE } from "../config";
 import { FileManager } from "../services/FileManager";
 import { Table } from "../services/Table";
 import { Tree } from "../services/Tree";
@@ -6,25 +6,26 @@ import { LogEntry, Node } from "../types";
 import { debounce } from "../utils/debounce";
 import { stripAnsi } from "../utils/stripAnsi";
 import { throttle } from "../utils/throttle";
-import { TerminalIO } from "./TerminalIO";
+import { TerminalIO } from "../services/TerminalIO";
 
 export class TUIController {
   private tree: Tree;
+  private renderer: Table;
+  private fileManager: FileManager;
   private table: string[] = [];
   private selectedIndex: number = 1;
-  private renderer = new Table();
-  private fileManager = new FileManager();
-  private topLimit = 5;
-  private bottomLimit = 6;
 
   private viewport = {
-    start: 0,
-    end: 0,
+    top: 0,
+    bottom: 0,
+    width: 0,
     height: 0,
   };
 
   constructor(logs: LogEntry[]) {
     this.tree = new Tree(logs);
+    this.renderer = new Table();
+    this.fileManager = new FileManager()
     this.updateViewport();
   }
 
@@ -32,8 +33,8 @@ export class TUIController {
     this.table = this.renderer.render(this.tree.root, this.selectedIndex);
 
     const visibleTable = this.table.slice(
-      this.viewport.start,
-      this.viewport.end
+      this.viewport.top,
+      this.viewport.bottom
     );
 
     TerminalIO.clear();
@@ -41,40 +42,41 @@ export class TUIController {
   };
 
   public moveUp = throttle((step = 1) => {
-    const minIndex = 1;
-    const maxStep = this.selectedIndex - minIndex;
+    if (this.selectedIndex <= 1) return;
 
-    if (maxStep <= 0) return;
-
-    const actualStep = Math.min(step, maxStep);
-
+    const topLimit = this.viewport.top + this.renderer.borderSize;
+    const actualStep = Math.min(step, this.selectedIndex - this.renderer.borderSize);
     this.selectedIndex -= actualStep;
 
-    if (this.selectedIndex <= this.viewport.start) {
-      this.viewport.start -= actualStep;
-      this.viewport.end -= actualStep;
+    if (this.selectedIndex < topLimit) { 
+      this.viewport.top = Math.max(0, this.viewport.top - actualStep);
+      this.viewport.bottom = this.viewport.top + this.viewport.height;
     }
 
     this.render();
   }, 50);
 
   public moveDown = throttle((step = 1) => {
-    const maxIndex = this.table.length - this.bottomLimit;
-    const maxStep = maxIndex - this.selectedIndex;
+  const sizeToEnd =
+    this.table.length - this.selectedIndex - this.renderer.headerSize - this.renderer.footerSize;
 
-    if (maxStep <= 0) return;
+  if (sizeToEnd <= 0) return;
 
-    const actualStep = Math.min(step, maxStep);
+  const bottomLimnit =
+    this.viewport.bottom -
+    this.renderer.footerSize -
+    this.renderer.borderSize * this.renderer.numberOfBodyBorders;
 
-    this.selectedIndex += actualStep;
+  const actualStep = Math.min(step, sizeToEnd);
+  this.selectedIndex += actualStep;
 
-    if (this.selectedIndex >= this.viewport.end - this.bottomLimit) {
-      this.viewport.start += actualStep;
-      this.viewport.end += actualStep;
-    }
+  if (this.selectedIndex >= bottomLimnit) {
+    this.viewport.top += actualStep;
+    this.viewport.bottom += actualStep;
+  }
 
-    this.render();
-  }, 50);
+  this.render();
+}, 50);
 
   public expand = () => {
     const selectedNode = this.renderer.selectedNode;
@@ -95,39 +97,11 @@ export class TUIController {
   };
 
   public expandAll = () => {
-    const traverse = (nodes: Node[]) => {
-      nodes.forEach((it) => {
-        it.isExpanded = true;
-
-        traverse(it.children);
-      });
-    };
-
-    traverse(this.tree.root);
-
-    this.selectedIndex = 1;
-    this.viewport.start = 0;
-    this.viewport.end = this.viewport.height;
-
-    this.render();
+    this.setExpansionState(true);
   };
 
   public collapseAll = () => {
-    const traverse = (nodes: Node[]) => {
-      nodes.forEach((it) => {
-        it.isExpanded = false;
-
-        traverse(it.children);
-      });
-    };
-
-    traverse(this.tree.root);
-
-    this.selectedIndex = 1;
-    this.viewport.start = 0;
-    this.viewport.end = this.viewport.height;
-
-    this.render();
+    this.setExpansionState(false);
   };
 
   public exportTreeToFile = async () => {
@@ -155,26 +129,44 @@ export class TUIController {
 
   private updateViewport = () => {
     const size = TerminalIO.getSize();
+
     if (!size) return;
 
-    const newHeight = size.rows - this.topLimit;
-    this.viewport.height = Math.max(1, newHeight);
-    this.viewport.end = this.viewport.start + this.viewport.height;
+    this.viewport.width = size.columns;
+    this.viewport.height = size.rows - REZERVED_SIZE;
 
-    if (this.selectedIndex >= this.viewport.end) {
-      const offset = 4;
-      this.viewport.start = this.selectedIndex - this.viewport.height + offset;
-      this.viewport.start = Math.max(0, this.viewport.start);
+    if (this.viewport.height >= 1) {
+      this.viewport.bottom = this.selectedIndex + this.renderer.headerSize;
     }
 
-    const maxStart = Math.max(0, this.table.length - this.viewport.height);
-    if (this.viewport.start > maxStart) {
-      this.viewport.start = maxStart;
+    if (this.viewport.height >= 1 + this.renderer.headerSize + this.renderer.footerSize) {
+      this.viewport.bottom = this.selectedIndex + this.renderer.footerSize + this.renderer.footerSize;
     }
 
-    this.viewport.start = Math.max(0, this.viewport.start);
-    this.viewport.end = this.viewport.start + this.viewport.height;
+    this.viewport.top = Math.max(0, this.viewport.bottom - this.viewport.height);
+    this.viewport.bottom = this.viewport.top + this.viewport.height;
   };
 
+  private setExpansionState = (isExpanded: boolean) => {
+    const traverse = (nodes: Node[]) => {
+      nodes.forEach((it) => {
+        it.isExpanded = isExpanded;
+
+        if (it.children.length) {
+          traverse(it.children);
+        }
+      });
+    };
+
+    traverse(this.tree.root);
+
+    this.selectedIndex = 1;
+    this.viewport.top = 0;
+    this.viewport.bottom = this.viewport.height;
+
+    this.render();
+  }
+
   private getHelpMessage = () => `\n\n${[...Command.keys()].join(",  ")}.\n`;
+  // private getHelpMessage = () => `\n\n${this.selectedIndex} ${this.viewport.height} ${this.viewport.top} ${this.viewport.bottom}\n`;
 }
