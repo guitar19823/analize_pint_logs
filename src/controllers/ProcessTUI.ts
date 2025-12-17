@@ -1,6 +1,6 @@
 import * as readline from "readline";
 import { TUIController } from "./TUIController";
-import { LogEntry } from "../types";
+import { ITree, LogEntry } from "../types";
 import { TerminalIO } from "../services/TerminalIO";
 
 export class ProcessTUI {
@@ -8,8 +8,8 @@ export class ProcessTUI {
   private rl: readline.Interface;
   private isRunning = true;
 
-  constructor(logs: LogEntry[]) {
-    this.controller = new TUIController(logs);
+  constructor(tree: ITree, private filePath: string) {
+    this.controller = new TUIController(tree);
 
     this.rl = readline.createInterface({
       input: process.stdin,
@@ -20,11 +20,9 @@ export class ProcessTUI {
 
   public start = () => {
     TerminalIO.clear();
-
     process.stdin.setRawMode(true);
     process.stdin.resume();
     process.stdin.setEncoding("utf8");
-
     this.controller.render();
 
     process.stdin.on("data", (input) => {
@@ -68,7 +66,7 @@ export class ProcessTUI {
           break;
 
         case "\x13":
-          this.controller.exportTableToFile();
+          this.controller.exportTableToFile(this.filePath);
           break;
 
         case "\x1b":

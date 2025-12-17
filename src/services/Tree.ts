@@ -1,18 +1,11 @@
 import { CURSOR_WIDTH, INDENT, NodeBoundary, PADDING, Symbol, TOGGLE_WIDTH } from "../config";
-import { LogEntry, Node, RowType } from "../types";
+import { ITree, LogEntry, Node, RowType } from "../types";
 import { calculateDuration } from "../utils/date";
 
-export class Tree {
-  private currentIndex = 0;
+export class Tree implements ITree {
   public root: Node[] = [];
-
-  private widths: Record<string, number> = {
-    name: 0,
-    start: 0,
-    end: 0,
-    duration: 0,
-    value: 0,
-  };
+  private currentIndex = 0;
+  private widths: number[] = [];
 
   constructor(logs: LogEntry[]) {
     this.buildTree(logs);
@@ -28,11 +21,13 @@ export class Tree {
   private addHeader = () => {
     const node = {
       index: this.currentIndex++,
-      name: "Название",
-      start: "Начало",
-      end: "Конец",
-      duration: "Длительность",
-      value: "Значение",
+      cells: [
+        "Название",
+        "Начало",
+        "Конец",
+        "Длительность",
+        "Значение",
+      ],
       children: [],
       isExpanded: false,
       depth: 0,
@@ -63,11 +58,13 @@ export class Tree {
 
     const node = {
       index: this.currentIndex++,
-      name: "Всего:",
-      start: firstLog.dateTime,
-      end: lastLog.dateTime,
-      duration: calculateDuration(firstLog.dateTime, lastLog.dateTime),
-      value: "",
+      cells: [
+        "Всего:",
+        firstLog.dateTime,
+        lastLog.dateTime,
+        calculateDuration(firstLog.dateTime, lastLog.dateTime),
+        "",
+      ],
       children: [],
       isExpanded: false,
       depth: 0,
@@ -92,13 +89,17 @@ export class Tree {
   };
 
   private handleEndLog = (log: LogEntry, stack: Node[]): void => {
-    if (stack.length === 0 || stack[stack.length - 1].name !== log.name) {
+    if (stack.length === 0 || stack[stack.length - 1].cells[0] !== log.name) {
       return;
     }
 
-    const node = stack.pop()!;
-    node.end = log.dateTime;
-    node.duration = calculateDuration(node.start, node.end);
+    const node = stack.pop();
+
+    if (!node) return;
+    
+    node.cells[2] = log.dateTime;
+    node.cells[3] = calculateDuration(node.cells[1], node.cells[2]);
+
     this.updateWidths(node, node.depth);
   };
 
@@ -116,11 +117,13 @@ export class Tree {
 
   private createNode = (log: LogEntry, depth: number, value = ""): Node => ({
     index: this.currentIndex++,
-    name: log.name,
-    start: log.value === NodeBoundary.start ? log.dateTime : "",
-    end: "",
-    duration: "",
-    value,
+    cells: [
+      log.name,
+      log.value === NodeBoundary.start ? log.dateTime : "",
+      "",
+      "",
+      value,
+    ],
     children: [],
     isExpanded: false,
     depth,
@@ -131,53 +134,39 @@ export class Tree {
     const indentWidth = depth * INDENT;
     const toggleWidth = node.children.length && TOGGLE_WIDTH;
 
-    const nameTotal =
-      indentWidth + CURSOR_WIDTH + toggleWidth + node.name.length;
+    node.cells.forEach((it, idx) => {
+      const width = this.widths[idx] ?? 0;
 
-    this.widths.name = Math.max(this.widths.name, nameTotal);
+      if (idx === 0) {
+        const nameTotal = indentWidth + CURSOR_WIDTH + toggleWidth + it.length;
 
-    if (node.start) {
-      this.widths.start = Math.max(this.widths.start, node.start.length);
-    }
+        this.widths[idx] = Math.max(width, nameTotal);
 
-    if (node.end) {
-      this.widths.end = Math.max(this.widths.end, node.end.length);
-    }
+        return;
+      }
 
-    if (node.duration !== null) {
-      this.widths.duration = Math.max(
-        this.widths.duration,
-        node.duration.length
-      );
-    }
-
-    if (node.value) {
-      this.widths.value = Math.max(this.widths.value, node.value.length);
-    }
+      this.widths[idx] = Math.max(width, it.length);
+    })
   };
 
   private addPads = (root: Node[]) => {
     root.forEach((it) => {
-      it.name = it.name.padEnd(
-        this.widths.name + PADDING - it.depth * INDENT,
-        Symbol.space
-      );
+      it.cells.forEach((cell, idx) => {
+        const width = this.widths[idx];
 
-      it.start = it.start
-        .padStart(this.widths.start + PADDING, Symbol.space)
-        .padEnd(this.widths.start + PADDING * 2, Symbol.space);
+        if (idx === 0) {
+          it.cells[idx] = cell.padEnd(
+            width + PADDING - it.depth * INDENT,
+            Symbol.space
+          );
 
-      it.end = it.end
-        .padStart(this.widths.end + PADDING, Symbol.space)
-        .padEnd(this.widths.end + PADDING * 2, Symbol.space);
+          return;
+        }
 
-      it.duration = it.duration
-        .padStart(this.widths.duration + PADDING, Symbol.space)
-        .padEnd(this.widths.duration + PADDING * 2, Symbol.space);
-
-      it.value = it.value
-        .padStart(this.widths.value + PADDING, Symbol.space)
-        .padEnd(this.widths.value + PADDING * 2, Symbol.space);
+        it.cells[idx] = cell
+          .padStart(width + PADDING, Symbol.space)
+          .padEnd(width + PADDING * 2, Symbol.space);
+      });
 
       if (it.children.length) {
         this.addPads(it.children);

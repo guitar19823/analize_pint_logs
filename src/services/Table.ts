@@ -38,13 +38,13 @@ export class Table {
   }
 
   private addRow = (lines: string[], node: Node, isSelected: boolean) => {
-    const cells = [
-      this.getName(node, isSelected),
-      node.start,
-      node.end,
-      node.duration,
-      node.value,
-    ];
+    const cells = node.cells.map((it, idx) => {
+      if (idx === 0) {
+        return this.getName(node, it, isSelected);
+      }
+
+      return it;
+    })
 
     switch (true) {
       case node.rowType === RowType.HEADER:
@@ -82,12 +82,12 @@ export class Table {
     }
   };
 
-  private getName = (node: Node, isSelected: boolean) => {
+  private getName = (node: Node, cell: string, isSelected: boolean) => {
     const toggle = node.isExpanded ? Symbol.collapse : Symbol.expand;
 
     return `${Symbol.space.repeat(node.depth * INDENT)} ${
       isSelected ? Symbol.cursor : Symbol.space
-    } ${node.children.length > 0 ? toggle : Symbol.space} ${node.name}`;
+    } ${node.children.length > 0 ? toggle : Symbol.space} ${cell}`;
   };
 
   private activate = (line: string) =>

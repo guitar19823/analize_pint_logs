@@ -9,21 +9,16 @@ export const enum RowType {
   BODY,
   FOOTER,
 }
-
-export interface CellNames {
-  name: string;
-  start: string;
-  end: string;
-  duration: string;
-  value: string;
-}
-
-export interface Service {
+export interface Node {
   index: number;
+  cells: string[],
   children: Node[];
   isExpanded: boolean;
   depth: number;
   rowType: RowType;
 }
 
-export interface Node extends CellNames, Service {}
+export interface ITree {
+  root: Node[];
+}
+

@@ -1,15 +1,14 @@
 import { Command, REZERVED_SIZE } from "../config";
 import { FileManager } from "../services/FileManager";
 import { Table } from "../services/Table";
-import { Tree } from "../services/Tree";
-import { LogEntry, Node } from "../types";
+import { ITree, Node } from "../types";
 import { debounce } from "../utils/debounce";
 import { stripAnsi } from "../utils/stripAnsi";
 import { throttle } from "../utils/throttle";
 import { TerminalIO } from "../services/TerminalIO";
 
 export class TUIController {
-  private tree: Tree;
+  private tree: ITree;
   private renderer: Table;
   private fileManager: FileManager;
   private table: string[] = [];
@@ -22,8 +21,8 @@ export class TUIController {
     height: 0,
   };
 
-  constructor(logs: LogEntry[]) {
-    this.tree = new Tree(logs);
+  constructor(tree: ITree) {
+    this.tree = tree;
     this.renderer = new Table();
     this.fileManager = new FileManager()
     this.updateViewport();
@@ -104,18 +103,14 @@ export class TUIController {
     this.setExpansionState(false);
   };
 
-  public exportTreeToFile = async () => {
-    const filePath = `tree.txt`;
-
+  public exportTreeToFile = async (filePath: string) => {
     await this.fileManager.writeFile(
       filePath,
       JSON.stringify(this.tree, null, "\t")
     );
   };
 
-  public exportTableToFile = async () => {
-    const filePath = `table.txt`;
-
+  public exportTableToFile = async (filePath: string) => {
     await this.fileManager.writeFile(
       filePath,
       this.table.map(stripAnsi).join("\n")
