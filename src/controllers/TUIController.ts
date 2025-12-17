@@ -2,10 +2,10 @@ import { Command, REZERVED_SIZE } from "../config";
 import { FileManager } from "../services/FileManager";
 import { Table } from "../services/Table";
 import { ITree, Node } from "../types";
-import { debounce } from "../utils/debounce";
 import { stripAnsi } from "../utils/stripAnsi";
 import { throttle } from "../utils/throttle";
 import { TerminalIO } from "../services/TerminalIO";
+import { throttleTrailing } from "../utils/throttleTrailing";
 
 export class TUIController {
   private tree: ITree;
@@ -24,7 +24,7 @@ export class TUIController {
   constructor(tree: ITree) {
     this.tree = tree;
     this.renderer = new Table();
-    this.fileManager = new FileManager()
+    this.fileManager = new FileManager();
     this.updateViewport();
   }
 
@@ -44,10 +44,13 @@ export class TUIController {
     if (this.selectedIndex <= 1) return;
 
     const topLimit = this.viewport.top + this.renderer.borderSize;
-    const actualStep = Math.min(step, this.selectedIndex - this.renderer.borderSize);
+    const actualStep = Math.min(
+      step,
+      this.selectedIndex - this.renderer.borderSize
+    );
     this.selectedIndex -= actualStep;
 
-    if (this.selectedIndex < topLimit) { 
+    if (this.selectedIndex < topLimit) {
       this.viewport.top = Math.max(0, this.viewport.top - actualStep);
       this.viewport.bottom = this.viewport.top + this.viewport.height;
     }
@@ -56,26 +59,29 @@ export class TUIController {
   }, 50);
 
   public moveDown = throttle((step = 1) => {
-  const sizeToEnd =
-    this.table.length - this.selectedIndex - this.renderer.headerSize - this.renderer.footerSize;
+    const sizeToEnd =
+      this.table.length -
+      this.selectedIndex -
+      this.renderer.headerSize -
+      this.renderer.footerSize;
 
-  if (sizeToEnd <= 0) return;
+    if (sizeToEnd <= 0) return;
 
-  const bottomLimnit =
-    this.viewport.bottom -
-    this.renderer.footerSize -
-    this.renderer.borderSize * this.renderer.numberOfBodyBorders;
+    const bottomLimnit =
+      this.viewport.bottom -
+      this.renderer.footerSize -
+      this.renderer.borderSize * this.renderer.numberOfBodyBorders;
 
-  const actualStep = Math.min(step, sizeToEnd);
-  this.selectedIndex += actualStep;
+    const actualStep = Math.min(step, sizeToEnd);
+    this.selectedIndex += actualStep;
 
-  if (this.selectedIndex >= bottomLimnit) {
-    this.viewport.top += actualStep;
-    this.viewport.bottom += actualStep;
-  }
+    if (this.selectedIndex >= bottomLimnit) {
+      this.viewport.top += actualStep;
+      this.viewport.bottom += actualStep;
+    }
 
-  this.render();
-}, 50);
+    this.render();
+  }, 50);
 
   public expand = () => {
     const selectedNode = this.renderer.selectedNode;
@@ -117,7 +123,7 @@ export class TUIController {
     );
   };
 
-  public handleResize = debounce(() => {
+  public handleResize = throttleTrailing(() => {
     this.updateViewport();
     this.render();
   }, 100);
@@ -134,11 +140,20 @@ export class TUIController {
       this.viewport.bottom = this.selectedIndex + this.renderer.headerSize;
     }
 
-    if (this.viewport.height >= 1 + this.renderer.headerSize + this.renderer.footerSize) {
-      this.viewport.bottom = this.selectedIndex + this.renderer.footerSize + this.renderer.footerSize;
+    if (
+      this.viewport.height >=
+      1 + this.renderer.headerSize + this.renderer.footerSize
+    ) {
+      this.viewport.bottom =
+        this.selectedIndex +
+        this.renderer.footerSize +
+        this.renderer.footerSize;
     }
 
-    this.viewport.top = Math.max(0, this.viewport.bottom - this.viewport.height);
+    this.viewport.top = Math.max(
+      0,
+      this.viewport.bottom - this.viewport.height
+    );
     this.viewport.bottom = this.viewport.top + this.viewport.height;
   };
 
@@ -160,7 +175,7 @@ export class TUIController {
     this.viewport.bottom = this.viewport.height;
 
     this.render();
-  }
+  };
 
   private getHelpMessage = () => `\n\n${[...Command.keys()].join(",  ")}.\n`;
   // private getHelpMessage = () => `\n\n${this.selectedIndex} ${this.viewport.height} ${this.viewport.top} ${this.viewport.bottom}\n`;
