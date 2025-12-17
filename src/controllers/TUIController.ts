@@ -1,4 +1,4 @@
-import { Command, REZERVED_SIZE } from "../config";
+import { Color, Command, REZERVED_SIZE } from "../config";
 import { FileManager } from "../services/FileManager";
 import { Table } from "../services/Table";
 import { ITree, Node } from "../types";
@@ -6,6 +6,7 @@ import { stripAnsi } from "../utils/stripAnsi";
 import { throttle } from "../utils/throttle";
 import { TerminalIO } from "../services/TerminalIO";
 import { throttleTrailing } from "../utils/throttleTrailing";
+import { truncateAnsiString } from "../utils/truncateAnsiString";
 
 export class TUIController {
   private tree: ITree;
@@ -31,13 +32,21 @@ export class TUIController {
   public render = () => {
     this.table = this.renderer.render(this.tree.root, this.selectedIndex);
 
-    const visibleTable = this.table.slice(
-      this.viewport.top,
-      this.viewport.bottom
-    );
+    const visibleTable = this.table
+      .slice(this.viewport.top, this.viewport.bottom)
+      .map((it) => {
+        return (
+          Color.RESET +
+          truncateAnsiString(it, this.viewport.width) +
+          Color.RESET
+        );
+      });
 
     TerminalIO.clear();
-    TerminalIO.write(visibleTable.join("\n") + this.getHelpMessage());
+    TerminalIO.write(
+      visibleTable.join("\n") +
+        truncateAnsiString(this.getHelpMessage(), this.viewport.width)
+    );
   };
 
   public moveUp = throttle((step = 1) => {
@@ -154,6 +163,7 @@ export class TUIController {
       0,
       this.viewport.bottom - this.viewport.height
     );
+
     this.viewport.bottom = this.viewport.top + this.viewport.height;
   };
 
