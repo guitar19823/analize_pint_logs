@@ -96,7 +96,7 @@ export class ProcessTUI {
 
   private stop(): void {
     if (!this.isRunning) return;
-    
+
     this.isRunning = false;
 
     process.stdin.setRawMode(false);

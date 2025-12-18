@@ -17,13 +17,13 @@ export interface IParam {
 }
 
 export interface Node {
-  readonly cells: string[],
+  readonly cells: string[];
   readonly param: IParam;
   readonly children?: Node[];
 }
 
 export interface Row {
-  readonly cells: string[],
+  readonly cells: string[];
   readonly hasChildrens: boolean;
   readonly depth: number;
   readonly param: IParam;
@@ -32,4 +32,3 @@ export interface Row {
 export interface ITree {
   readonly root: Node[];
 }
-

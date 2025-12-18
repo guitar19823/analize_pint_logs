@@ -1,4 +1,10 @@
-import { ANSI, Command, SCROLL_STEP_HR, REZERVED_SIZE, TABLE_FILE_PATH } from "../config";
+import {
+  ANSI,
+  Command,
+  SCROLL_STEP_HR,
+  REZERVED_SIZE,
+  TABLE_FILE_PATH,
+} from "../config";
 import { FileManager } from "../services/FileManager";
 import { Table } from "../services/Table";
 import { ITree, Node } from "../types";
@@ -7,12 +13,13 @@ import { throttle } from "../utils/throttle";
 import { TerminalIO } from "../services/TerminalIO";
 import { throttleTrailing } from "../utils/throttleTrailing";
 import { ansiSlice } from "../utils/ansiSlice";
-import { performance } from 'node:perf_hooks';
+import { performance } from "node:perf_hooks";
 
 export class TUIController {
   private renderer: Table;
   private fileManager: FileManager;
   private table: string[] = [];
+  private tableWidth: number = 0;
   private selectedIndex: number = 1;
   private duration = 0;
 
@@ -23,6 +30,8 @@ export class TUIController {
     right: 0,
     width: 0,
     height: 0,
+    prevWidth: 0,
+    prevHeight: 0,
   };
 
   constructor(tree: ITree) {
@@ -33,14 +42,18 @@ export class TUIController {
 
   public render = (isUpdateFlatNodes = false) => {
     const start = performance.now();
-    TerminalIO.clear();
 
     this.table = this.renderer.render(this.selectedIndex, isUpdateFlatNodes);
+    this.tableWidth = stripAnsi(this.table[0] ?? "").length;
 
     const visibleTable = this.table
-      .map((it) => ansiSlice(it, this.viewport.left, this.viewport.right) + ANSI.RESET)
+      .map(
+        (it) =>
+          ansiSlice(it, this.viewport.left, this.viewport.right) + ANSI.RESET
+      )
       .slice(this.viewport.top, this.viewport.bottom);
 
+    TerminalIO.clear();
     TerminalIO.write(visibleTable.join("\n"));
 
     this.duration = performance.now() - start;
@@ -94,14 +107,14 @@ export class TUIController {
     if (this.viewport.left > 0) {
       step = Math.min(step, this.viewport.left);
       this.viewport.left -= step;
-      this.viewport.right -= step; 
+      this.viewport.right -= step;
       this.render();
     }
   }, 0);
 
   public moveRight = throttle((step = SCROLL_STEP_HR) => {
-    if (this.viewport.right < this.table[0].length) {
-      step = Math.min(step, this.table[0].length - this.viewport.right);
+    if (this.viewport.right < this.tableWidth) {
+      step = Math.min(step, this.tableWidth - this.viewport.right);
       this.viewport.left += step;
       this.viewport.right += step;
       this.render();
@@ -111,8 +124,12 @@ export class TUIController {
   public expand = () => {
     const selectedNode = this.renderer.selectedRow;
 
-    if (selectedNode && !selectedNode.param.isExpanded && selectedNode.hasChildrens) {
-      this.renderer.tree
+    if (
+      selectedNode &&
+      !selectedNode.param.isExpanded &&
+      selectedNode.hasChildrens
+    ) {
+      this.renderer.tree;
       selectedNode.param.isExpanded = true;
       this.render(true);
     }
@@ -152,13 +169,14 @@ export class TUIController {
   public handleResize = throttleTrailing(() => {
     this.updateViewport();
     this.render();
-  }, 10);
+  }, 50);
 
   private updateViewport = () => {
     const size = TerminalIO.getSize();
 
     if (!size) return;
 
+    this.viewport.prevWidth = this.viewport.width;
     this.viewport.width = size.columns;
     this.viewport.height = size.rows - REZERVED_SIZE;
 
@@ -181,9 +199,12 @@ export class TUIController {
       this.viewport.bottom - this.viewport.height
     );
 
-    if (this.viewport.right > this.table[0]?.length && this.viewport.left > 0) {
-      this.viewport.left--;
-    } 
+    if (this.viewport.right > this.tableWidth && this.viewport.left > 0) {
+      this.viewport.left = Math.max(
+        0,
+        this.viewport.left - this.viewport.right + this.tableWidth
+      );
+    }
 
     this.viewport.bottom = this.viewport.top + this.viewport.height;
     this.viewport.right = this.viewport.left + this.viewport.width - 1;
@@ -210,5 +231,7 @@ export class TUIController {
   };
 
   private getHelpMessage = () =>
-    `\n${[...Command.keys()].join(", ").slice(this.viewport.left, this.viewport.right)}.\n`;
+    `\n${ANSI.TX_BRIGHT_BLUE}${[...Command.keys()]
+      .join(", ")
+      .slice(this.viewport.left, this.viewport.right)}.${ANSI.RESET}\n`;
 }

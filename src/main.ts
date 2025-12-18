@@ -6,7 +6,7 @@ import { Tree } from "./services/Tree";
 (async () => {
   try {
     const file = new FileManager();
-    const tree = new Tree(await file.read("./logs.json"))
+    const tree = new Tree(await file.read("./logs.json"));
     // const tree = tableTree;
     const app = new ProcessTUI(tree);
 

@@ -19,20 +19,19 @@ export const ansiSlice = (
   ansiRegex.lastIndex = 0;
 
   while ((match = ansiRegex.exec(str)) !== null) {
-    visibleLength += match.index - lastIndex; 
-    lastIndex = match.index + match[0].length; 
+    visibleLength += match.index - lastIndex;
+    lastIndex = match.index + match[0].length;
   }
 
-  visibleLength += str.length - lastIndex; 
+  visibleLength += str.length - lastIndex;
 
   const startIdx = normalizeIndex(start, visibleLength);
   const endIdx = normalizeIndex(end, visibleLength);
 
   if (startIdx >= endIdx) return "";
 
-  
   let result = "";
-  let currentVisible = 0; 
+  let currentVisible = 0;
   lastIndex = 0;
   ansiRegex.lastIndex = 0;
 

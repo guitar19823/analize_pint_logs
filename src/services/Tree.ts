@@ -1,4 +1,4 @@
-import { NodeBoundary} from "../config";
+import { NodeBoundary } from "../config";
 import { ITree, LogEntry, Node, RowType } from "../types";
 import { calculateDuration } from "../utils/date";
 
@@ -18,13 +18,7 @@ export class Tree implements ITree {
 
   private addHeader = () => {
     const node = {
-      cells: [
-        "Название",
-        "Начало",
-        "Конец",
-        "Длительность",
-        "Значение",
-      ],
+      cells: ["Название", "Начало", "Конец", "Длительность", "Значение"],
       param: {
         id: this.currentIndex++,
         isExpanded: false,
@@ -41,7 +35,10 @@ export class Tree implements ITree {
     for (const log of logs) {
       if (log.value === NodeBoundary.start) {
         this.handleStartLog(log, stack);
-      } else if (log.value === NodeBoundary.end || log.value === NodeBoundary.error) {
+      } else if (
+        log.value === NodeBoundary.end ||
+        log.value === NodeBoundary.error
+      ) {
         this.handleEndLog(log, stack);
       } else {
         this.handleOtherLog(log, stack);
@@ -65,7 +62,7 @@ export class Tree implements ITree {
         id: this.currentIndex++,
         isExpanded: false,
         type: RowType.FOOTER,
-      }
+      },
     };
 
     this.root.push(node);
@@ -91,7 +88,7 @@ export class Tree implements ITree {
     const node = stack.pop();
 
     if (!node) return;
-    
+
     node.cells[2] = log.dateTime;
     node.cells[3] = calculateDuration(node.cells[1], node.cells[2]);
   };

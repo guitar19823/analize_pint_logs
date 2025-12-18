@@ -10,8 +10,9 @@ import {
   TOGGLE_WIDTH,
   CURSOR_WIDTH,
   ANSI,
+  BODY_ROW_ACTIVE,
+  FOOTER_ROW,
 } from "../config";
-import { TerminalIO } from "./TerminalIO";
 import { ITree, Node, Row, RowType } from "../types";
 
 export class Table {
@@ -33,15 +34,17 @@ export class Table {
     this.numberOfBodyBorders = 0;
     const lines: string[] = [];
 
-    this.flattenTree(this.tree.root, isUpdateFlatNodes).forEach((row, index) => {
-      const isSelected = index === selectedIndex;
+    this.flattenTree(this.tree.root, isUpdateFlatNodes).forEach(
+      (row, index) => {
+        const isSelected = index === selectedIndex;
 
-      if (isSelected) {
-        this.selectedRow = row;
+        if (isSelected) {
+          this.selectedRow = row;
+        }
+
+        this.addRow(lines, row, isSelected);
       }
-
-      this.addRow(lines, row, isSelected);
-    });
+    );
 
     return lines;
   }
@@ -53,37 +56,37 @@ export class Table {
       }
 
       return it;
-    })
+    });
 
     switch (true) {
       case row.param.type === RowType.HEADER:
         const header = [
           this.getTableBorder(cells, BORDER_TOP),
-          this.getTableRow(cells, HEADER_ROW) + ANSI.RESET,
+          this.getTableRow(cells, HEADER_ROW),
           this.getTableBorder(cells, BORDER_MIDDLE),
         ];
 
         this.headerSize = header.length;
         this.numberOfBodyBorders++;
 
-        lines.push(...header)
+        lines.push(...header);
         break;
 
       case row.param.type === RowType.FOOTER:
         const footer = [
           this.getTableBorder(cells, BORDER_MIDDLE),
-          this.getTableRow(cells, BODY_ROW),
+          this.getTableRow(cells, FOOTER_ROW),
           this.getTableBorder(cells, BORDER_BOTTOM),
         ];
 
         this.footerSize = footer.length;
         this.numberOfBodyBorders++;
 
-        lines.push(...footer)
+        lines.push(...footer);
         break;
 
-      case isSelected && TerminalIO.isSupported():
-        lines.push(this.activate(this.getTableRow(cells, BODY_ROW)));
+      case isSelected:
+        lines.push(this.getTableRow(cells, BODY_ROW_ACTIVE));
         break;
 
       default:
@@ -93,14 +96,11 @@ export class Table {
 
   private getName = (row: Row, cell: string, isSelected: boolean) => {
     const toggle = row.param.isExpanded ? Symbol.collapse : Symbol.expand;
-    
+
     return `${Symbol.space.repeat(row.depth * INDENT)} ${
       isSelected ? Symbol.cursor : Symbol.space
     } ${row.hasChildrens ? toggle : Symbol.space} ${cell}`;
   };
-
-  private activate = (line: string) =>
-    ANSI.SELECTED_BG + ANSI.SELECTED_FG + line + ANSI.RESET;
 
   private getTableBorder = (
     cells: string[],
@@ -122,7 +122,7 @@ export class Table {
   private getTableRow = (
     cells: string[],
     { left, center }: { left: string; center: string }
-  ) => cells.reduce((acc, it) => acc + it + center, left);
+  ) => cells.reduce((acc, it) => acc + it + center, left) + ANSI.RESET;
 
   private updateWidths = (nodes: Node[], depth = 0) => {
     nodes.forEach((it) => {
@@ -133,12 +133,13 @@ export class Table {
         const width = this.widths[idx] ?? 0;
 
         if (idx === 0) {
-          const nameTotal = indentWidth + CURSOR_WIDTH + toggleWidth + cell.length;
+          const nameTotal =
+            indentWidth + CURSOR_WIDTH + toggleWidth + cell.length;
           this.widths[idx] = Math.max(width, nameTotal);
 
           return;
         }
-      
+
         this.widths[idx] = Math.max(width, cell.length);
       });
 
@@ -146,7 +147,7 @@ export class Table {
         this.updateWidths(it.children, depth + 1);
       }
     });
-  }
+  };
 
   private addPads = (nodes: Node[], depth = 0) => {
     nodes.forEach((it) => {
@@ -176,7 +177,7 @@ export class Table {
   private flattenTree = (tree: Node[], isUpdateFlatNodes: boolean) => {
     if (isUpdateFlatNodes) {
       this.flatNodes = [];
-      
+
       const traverse = (nodes: Node[], depth: number) => {
         for (const node of nodes) {
           this.flatNodes.push({
@@ -191,10 +192,10 @@ export class Table {
           }
         }
       };
-      
+
       traverse(tree, 0);
     }
 
     return this.flatNodes;
-  }
+  };
 }
