@@ -93,15 +93,4 @@ export class TerminalIO {
       !process.env.TERM?.includes("linux")
     );
   }
-
-  /**
-   * Низкоуровневая запись в stdout (используется внутри класса)
-   */
-  public static rawWrite(data: string): void {
-    try {
-      process.stdout.write(data);
-    } catch (e) {
-      // Игнорируем ошибки
-    }
-  }
 }

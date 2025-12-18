@@ -1,14 +1,15 @@
 import * as readline from "readline";
 import { TUIController } from "./TUIController";
-import { ITree, LogEntry } from "../types";
+import { ITree } from "../types";
 import { TerminalIO } from "../services/TerminalIO";
+import { SCROLL_STEP_VR } from "../config";
 
 export class ProcessTUI {
   private controller: TUIController;
   private rl: readline.Interface;
   private isRunning = true;
 
-  constructor(tree: ITree, private filePath: string) {
+  constructor(tree: ITree) {
     this.controller = new TUIController(tree);
 
     this.rl = readline.createInterface({
@@ -23,7 +24,7 @@ export class ProcessTUI {
     process.stdin.setRawMode(true);
     process.stdin.resume();
     process.stdin.setEncoding("utf8");
-    this.controller.render();
+    this.controller.render(true);
 
     process.stdin.on("data", (input) => {
       if (!this.isRunning) return;
@@ -40,11 +41,11 @@ export class ProcessTUI {
           break;
 
         case "\x1b[5~":
-          this.controller.moveUp(5);
+          this.controller.moveUp(SCROLL_STEP_VR);
           break;
 
         case "\x1b[6~":
-          this.controller.moveDown(5);
+          this.controller.moveDown(SCROLL_STEP_VR);
           break;
 
         case "\x1b[C":
@@ -65,8 +66,16 @@ export class ProcessTUI {
           this.controller.collapseAll();
           break;
 
+        case "\x1b[1;2D":
+          this.controller.moveLeft();
+          break;
+
+        case "\x1b[1;2C":
+          this.controller.moveRight();
+          break;
+
         case "\x13":
-          this.controller.exportTableToFile(this.filePath);
+          this.controller.exportTableToFile();
           break;
 
         case "\x1b":
@@ -87,6 +96,7 @@ export class ProcessTUI {
 
   private stop(): void {
     if (!this.isRunning) return;
+    
     this.isRunning = false;
 
     process.stdin.setRawMode(false);

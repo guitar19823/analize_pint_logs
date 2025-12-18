@@ -1,7 +1,7 @@
 export interface LogEntry {
-  name: string;
-  dateTime: string;
-  value: string | null;
+  readonly name: string;
+  readonly dateTime: string;
+  readonly value: string | null;
 }
 
 export const enum RowType {
@@ -9,16 +9,27 @@ export const enum RowType {
   BODY,
   FOOTER,
 }
-export interface Node {
-  index: number;
-  cells: string[],
-  children: Node[];
+
+export interface IParam {
+  readonly type: RowType;
+  readonly id: number;
   isExpanded: boolean;
-  depth: number;
-  rowType: RowType;
+}
+
+export interface Node {
+  readonly cells: string[],
+  readonly param: IParam;
+  readonly children?: Node[];
+}
+
+export interface Row {
+  readonly cells: string[],
+  readonly hasChildrens: boolean;
+  readonly depth: number;
+  readonly param: IParam;
 }
 
 export interface ITree {
-  root: Node[];
+  readonly root: Node[];
 }
 

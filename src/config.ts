@@ -3,9 +3,11 @@ export const CURSOR_WIDTH = 3;
 export const TOGGLE_WIDTH = 2;
 export const PADDING = 1;
 export const REZERVED_SIZE = 5;
+export const SCROLL_STEP_VR = 3;
+export const SCROLL_STEP_HR = 3;
+export const TABLE_FILE_PATH = 'table.txt';
 
-// Цвета в формате ANSI
-export const enum Color {
+export const enum ANSI {
   SELECTED_BG = "\x1b[48;5;235m", // Тёмно‑серый фон
   SELECTED_FG = "\x1b[38;5;15m", // Белый текст
   HEADER_BG = "\x1b[48;5;24m", // Тёмно‑синий фон заголовка
@@ -56,8 +58,8 @@ export const BORDER_BOTTOM = {
 };
 
 export const HEADER_ROW = {
-  left: Border.vr + Color.HEADER_BG + Color.HEADER_FG,
-  center: Color.RESET + Border.vr + Color.HEADER_BG + Color.HEADER_FG,
+  left: Border.vr + ANSI.HEADER_BG + ANSI.HEADER_FG,
+  center: ANSI.RESET + Border.vr + ANSI.HEADER_BG + ANSI.HEADER_FG,
 };
 
 export const BODY_ROW = {
@@ -70,9 +72,11 @@ export const Command = new Map([
   ['[↓] Вниз', '\x1b[B'],
   ['[→] Раскрыть', '\x1b[B'],
   ['[←] Свернуть', '\x1b[B'],
-  ['[Ctrl+→] Раскрыть всё', '\x1b[B'],
-  ['[Ctrl+←] Свернуть всё', '\x1b[B'],
-  ['[Ctrl+S] Экспорт', '\x1b[B'],
+  ['[Ctrl →] Раскрыть всё', '\x1b[B'],
+  ['[Ctrl ←] Свернуть всё', '\x1b[B'],
+  ['[Shift →] Вправо', '\x1b[B'],
+  ['[Shift ←] Влево', '\x1b[B'],
+  ['[Ctrl S] Экспорт', '\x1b[B'],
   ['[Esc] Выход', '\x1b[B'],
 ]);
 

@@ -1,4 +1,4 @@
-import { Color, Command, REZERVED_SIZE } from "../config";
+import { ANSI, Command, SCROLL_STEP_HR, REZERVED_SIZE, TABLE_FILE_PATH } from "../config";
 import { FileManager } from "../services/FileManager";
 import { Table } from "../services/Table";
 import { ITree, Node } from "../types";
@@ -6,47 +6,45 @@ import { stripAnsi } from "../utils/stripAnsi";
 import { throttle } from "../utils/throttle";
 import { TerminalIO } from "../services/TerminalIO";
 import { throttleTrailing } from "../utils/throttleTrailing";
-import { truncateAnsiString } from "../utils/truncateAnsiString";
+import { ansiSlice } from "../utils/ansiSlice";
+import { performance } from 'node:perf_hooks';
 
 export class TUIController {
-  private tree: ITree;
   private renderer: Table;
   private fileManager: FileManager;
   private table: string[] = [];
   private selectedIndex: number = 1;
+  private duration = 0;
 
   private viewport = {
     top: 0,
     bottom: 0,
+    left: 0,
+    right: 0,
     width: 0,
     height: 0,
   };
 
   constructor(tree: ITree) {
-    this.tree = tree;
-    this.renderer = new Table();
+    this.renderer = new Table(tree);
     this.fileManager = new FileManager();
     this.updateViewport();
   }
 
-  public render = () => {
-    this.table = this.renderer.render(this.tree.root, this.selectedIndex);
+  public render = (isUpdateFlatNodes = false) => {
+    const start = performance.now();
+    TerminalIO.clear();
+
+    this.table = this.renderer.render(this.selectedIndex, isUpdateFlatNodes);
 
     const visibleTable = this.table
-      .slice(this.viewport.top, this.viewport.bottom)
-      .map((it) => {
-        return (
-          Color.RESET +
-          truncateAnsiString(it, this.viewport.width) +
-          Color.RESET
-        );
-      });
+      .map((it) => ansiSlice(it, this.viewport.left, this.viewport.right) + ANSI.RESET)
+      .slice(this.viewport.top, this.viewport.bottom);
 
-    TerminalIO.clear();
-    TerminalIO.write(
-      visibleTable.join("\n") +
-        truncateAnsiString(this.getHelpMessage(), this.viewport.width)
-    );
+    TerminalIO.write(visibleTable.join("\n"));
+
+    this.duration = performance.now() - start;
+    TerminalIO.write(this.getHelpMessage());
   };
 
   public moveUp = throttle((step = 1) => {
@@ -92,21 +90,40 @@ export class TUIController {
     this.render();
   }, 50);
 
-  public expand = () => {
-    const selectedNode = this.renderer.selectedNode;
-
-    if (selectedNode && selectedNode.children.length > 0) {
-      selectedNode.isExpanded = true;
+  public moveLeft = throttle((step = SCROLL_STEP_HR) => {
+    if (this.viewport.left > 0) {
+      step = Math.min(step, this.viewport.left);
+      this.viewport.left -= step;
+      this.viewport.right -= step; 
       this.render();
+    }
+  }, 0);
+
+  public moveRight = throttle((step = SCROLL_STEP_HR) => {
+    if (this.viewport.right < this.table[0].length) {
+      step = Math.min(step, this.table[0].length - this.viewport.right);
+      this.viewport.left += step;
+      this.viewport.right += step;
+      this.render();
+    }
+  }, 50);
+
+  public expand = () => {
+    const selectedNode = this.renderer.selectedRow;
+
+    if (selectedNode && !selectedNode.param.isExpanded && selectedNode.hasChildrens) {
+      this.renderer.tree
+      selectedNode.param.isExpanded = true;
+      this.render(true);
     }
   };
 
   public collapse = () => {
-    const selectedNode = this.renderer.selectedNode;
+    const selectedNode = this.renderer.selectedRow;
 
-    if (selectedNode) {
-      selectedNode.isExpanded = false;
-      this.render();
+    if (selectedNode?.param.isExpanded) {
+      selectedNode.param.isExpanded = false;
+      this.render(true);
     }
   };
 
@@ -118,16 +135,16 @@ export class TUIController {
     this.setExpansionState(false);
   };
 
-  public exportTreeToFile = async (filePath: string) => {
+  public exportTreeToFile = async () => {
     await this.fileManager.writeFile(
-      filePath,
-      JSON.stringify(this.tree, null, "\t")
+      TABLE_FILE_PATH,
+      JSON.stringify(this.renderer.tree, null, "\t")
     );
   };
 
-  public exportTableToFile = async (filePath: string) => {
+  public exportTableToFile = async () => {
     await this.fileManager.writeFile(
-      filePath,
+      TABLE_FILE_PATH,
       this.table.map(stripAnsi).join("\n")
     );
   };
@@ -135,7 +152,7 @@ export class TUIController {
   public handleResize = throttleTrailing(() => {
     this.updateViewport();
     this.render();
-  }, 100);
+  }, 10);
 
   private updateViewport = () => {
     const size = TerminalIO.getSize();
@@ -164,29 +181,34 @@ export class TUIController {
       this.viewport.bottom - this.viewport.height
     );
 
+    if (this.viewport.right > this.table[0]?.length && this.viewport.left > 0) {
+      this.viewport.left--;
+    } 
+
     this.viewport.bottom = this.viewport.top + this.viewport.height;
+    this.viewport.right = this.viewport.left + this.viewport.width - 1;
   };
 
   private setExpansionState = (isExpanded: boolean) => {
     const traverse = (nodes: Node[]) => {
       nodes.forEach((it) => {
-        it.isExpanded = isExpanded;
+        it.param.isExpanded = isExpanded;
 
-        if (it.children.length) {
+        if (it.children?.length) {
           traverse(it.children);
         }
       });
     };
 
-    traverse(this.tree.root);
+    traverse(this.renderer.tree.root);
 
     this.selectedIndex = 1;
     this.viewport.top = 0;
     this.viewport.bottom = this.viewport.height;
 
-    this.render();
+    this.render(true);
   };
 
-  private getHelpMessage = () => `\n\n${[...Command.keys()].join(",  ")}.\n`;
-  // private getHelpMessage = () => `\n\n${this.selectedIndex} ${this.viewport.height} ${this.viewport.top} ${this.viewport.bottom}\n`;
+  private getHelpMessage = () =>
+    `\n${[...Command.keys()].join(", ").slice(this.viewport.left, this.viewport.right)}.\n`;
 }

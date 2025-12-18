@@ -1,56 +1,65 @@
 import {
   INDENT,
-  Color,
   BORDER_TOP,
   BORDER_MIDDLE,
   BORDER_BOTTOM,
   HEADER_ROW,
   BODY_ROW,
   Symbol,
+  PADDING,
+  TOGGLE_WIDTH,
+  CURSOR_WIDTH,
+  ANSI,
 } from "../config";
 import { TerminalIO } from "./TerminalIO";
-import { Node, RowType } from "../types";
-import { flattenTree } from "../utils/flattenTree";
+import { ITree, Node, Row, RowType } from "../types";
 
 export class Table {
-  public selectedNode: Node | null = null;
+  private readonly widths: number[] = [];
+  private flatNodes: Row[] = [];
+
+  public selectedRow: Row | null = null;
   public headerSize = 0;
   public footerSize = 0;
   public numberOfBodyBorders = 0;
   public borderSize = 1;
 
-  public render(tree: Node[], selectedIndex: number) {
+  constructor(public tree: ITree) {
+    this.updateWidths(this.tree.root);
+    this.addPads(this.tree.root);
+  }
+
+  public render(selectedIndex: number, isUpdateFlatNodes: boolean) {
     this.numberOfBodyBorders = 0;
     const lines: string[] = [];
-    const flatNodes = flattenTree(tree);
 
-    flatNodes.forEach((node, index) => {
+    this.flattenTree(this.tree.root, isUpdateFlatNodes).forEach((row, index) => {
       const isSelected = index === selectedIndex;
 
       if (isSelected) {
-        this.selectedNode = node;
+        this.selectedRow = row;
       }
 
-      this.addRow(lines, node, isSelected);
+      this.addRow(lines, row, isSelected);
     });
 
     return lines;
   }
 
-  private addRow = (lines: string[], node: Node, isSelected: boolean) => {
-    const cells = node.cells.map((it, idx) => {
+  private addRow = (lines: string[], row: Row, isSelected: boolean) => {
+    const cells = row.cells.map((it, idx) => {
       if (idx === 0) {
-        return this.getName(node, it, isSelected);
+        return this.getName(row, it, isSelected);
       }
 
       return it;
     })
 
     switch (true) {
-      case node.rowType === RowType.HEADER:
+      case row.param.type === RowType.HEADER:
         const header = [
           this.getTableBorder(cells, BORDER_TOP),
-          this.getTableRow(cells, HEADER_ROW) + Color.RESET,
+          this.getTableRow(cells, HEADER_ROW) + ANSI.RESET,
           this.getTableBorder(cells, BORDER_MIDDLE),
         ];
 
@@ -60,7 +69,7 @@ export class Table {
         lines.push(...header)
         break;
 
-      case node.rowType === RowType.FOOTER:
+      case row.param.type === RowType.FOOTER:
         const footer = [
           this.getTableBorder(cells, BORDER_MIDDLE),
           this.getTableRow(cells, BODY_ROW),
@@ -82,16 +91,16 @@ export class Table {
     }
   };
 
-  private getName = (node: Node, cell: string, isSelected: boolean) => {
-    const toggle = node.isExpanded ? Symbol.collapse : Symbol.expand;
-
-    return `${Symbol.space.repeat(node.depth * INDENT)} ${
+  private getName = (row: Row, cell: string, isSelected: boolean) => {
+    const toggle = row.param.isExpanded ? Symbol.collapse : Symbol.expand;
+    
+    return `${Symbol.space.repeat(row.depth * INDENT)} ${
       isSelected ? Symbol.cursor : Symbol.space
-    } ${node.children.length > 0 ? toggle : Symbol.space} ${cell}`;
+    } ${row.hasChildrens ? toggle : Symbol.space} ${cell}`;
   };
 
   private activate = (line: string) =>
-    Color.SELECTED_BG + Color.SELECTED_FG + line + Color.RESET;
+    ANSI.SELECTED_BG + ANSI.SELECTED_FG + line + ANSI.RESET;
 
   private getTableBorder = (
     cells: string[],
@@ -114,4 +123,78 @@ export class Table {
     cells: string[],
     { left, center }: { left: string; center: string }
   ) => cells.reduce((acc, it) => acc + it + center, left);
+
+  private updateWidths = (nodes: Node[], depth = 0) => {
+    nodes.forEach((it) => {
+      const indentWidth = depth * INDENT;
+      const toggleWidth = (it.children?.length ?? 0) && TOGGLE_WIDTH;
+
+      it.cells.forEach((cell, idx) => {
+        const width = this.widths[idx] ?? 0;
+
+        if (idx === 0) {
+          const nameTotal = indentWidth + CURSOR_WIDTH + toggleWidth + cell.length;
+          this.widths[idx] = Math.max(width, nameTotal);
+
+          return;
+        }
+      
+        this.widths[idx] = Math.max(width, cell.length);
+      });
+
+      if (it.children?.length) {
+        this.updateWidths(it.children, depth + 1);
+      }
+    });
+  }
+
+  private addPads = (nodes: Node[], depth = 0) => {
+    nodes.forEach((it) => {
+      it.cells.forEach((cell, idx) => {
+        const width = this.widths[idx];
+
+        if (idx === 0) {
+          it.cells[idx] = cell.padEnd(
+            width + PADDING - depth * INDENT,
+            Symbol.space
+          );
+
+          return;
+        }
+
+        it.cells[idx] = cell
+          .padStart(width + PADDING, Symbol.space)
+          .padEnd(width + PADDING * 2, Symbol.space);
+      });
+
+      if (it.children?.length) {
+        this.addPads(it.children, depth + 1);
+      }
+    });
+  };
+
+  private flattenTree = (tree: Node[], isUpdateFlatNodes: boolean) => {
+    if (isUpdateFlatNodes) {
+      this.flatNodes = [];
+      
+      const traverse = (nodes: Node[], depth: number) => {
+        for (const node of nodes) {
+          this.flatNodes.push({
+            cells: node.cells,
+            hasChildrens: !!node.children?.length,
+            depth: depth ?? 0,
+            param: node.param,
+          });
+
+          if (node.param.isExpanded && node.children?.length) {
+            traverse(node.children, depth + 1);
+          }
+        }
+      };
+      
+      traverse(tree, 0);
+    }
+
+    return this.flatNodes;
+  }
 }

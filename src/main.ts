@@ -1,12 +1,14 @@
 import { FileManager } from "./services/FileManager";
 import { ProcessTUI } from "./controllers/ProcessTUI";
 import { Tree } from "./services/Tree";
+// import { tableTree } from "./testTable";
 
 (async () => {
   try {
     const file = new FileManager();
     const tree = new Tree(await file.read("./logs.json"))
-    const app = new ProcessTUI(tree, 'table.txt');
+    // const tree = tableTree;
+    const app = new ProcessTUI(tree);
 
     app.start();
   } catch (error) {
