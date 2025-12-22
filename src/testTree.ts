@@ -1,6 +1,6 @@
 import { ITree, RowType } from "./types";
 
-export const tableTree: ITree = {
+export const testTree: ITree = {
   root: [
     {
       cells: [
