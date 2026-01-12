@@ -14,10 +14,10 @@ export const formatDuration = (ms: number): string => {
 };
 
 export const calculateDuration = (
-  start: string | null,
-  end: string
-): string => {
-  if (!start || !end) return formatDuration(0);
+  start: string | undefined | null,
+  end: string | undefined | null
+): number => {
+  if (!start || !end) return 0;
 
-  return formatDuration(parseDateTime(end) - parseDateTime(start));
+  return parseDateTime(end) - parseDateTime(start);
 };

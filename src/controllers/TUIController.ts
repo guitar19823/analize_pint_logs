@@ -90,7 +90,7 @@ export class TUIController {
     const bottomLimnit =
       this.viewport.bottom -
       this.renderer.footerSize -
-      this.renderer.borderSize * this.renderer.numberOfBodyBorders;
+      this.renderer.borderSize * this.renderer.numberOfMiddleBorders;
 
     const actualStep = Math.min(step, sizeToEnd);
     this.selectedIndex += actualStep;

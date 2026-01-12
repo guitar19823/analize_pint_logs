@@ -17,82 +17,79 @@ import { ITree, Node, Row, RowType } from "../types";
 
 export class Table {
   private readonly widths: number[] = [];
-  private flatNodes: Row[] = [];
+  private header: Row[] = [];
+  private body: Row[] = [];
+  private footer: Row[] = [];
 
   public selectedRow: Row | null = null;
   public headerSize = 0;
   public footerSize = 0;
-  public numberOfBodyBorders = 0;
+  public numberOfMiddleBorders = 0;
   public borderSize = 1;
 
   constructor(public tree: ITree) {
     this.updateWidths(this.tree.root);
     this.addPads(this.tree.root);
+    this.updateWidths(this.tree.root);
   }
 
   public render(selectedIndex: number, isUpdateFlatNodes: boolean) {
-    this.numberOfBodyBorders = 0;
+    this.numberOfMiddleBorders = 0;
     const lines: string[] = [];
 
-    this.flattenTree(this.tree.root, isUpdateFlatNodes).forEach(
-      (row, index) => {
-        const isSelected = index === selectedIndex;
+    this.flattenTree(this.tree.root, isUpdateFlatNodes);
 
-        if (isSelected) {
-          this.selectedRow = row;
-        }
+    this.headerSize = this.header.length + 2;
+    this.footerSize = this.footer.length + 2;
 
-        this.addRow(lines, row, isSelected);
+    lines.push(this.getTableBorder(this.widths, BORDER_TOP));
+
+    this.header.forEach((row) => {
+      lines.push(this.getTableRow(this.getCells(row), HEADER_ROW));
+    });
+
+    if (this.header.length) {
+      lines.push(this.getTableBorder(this.widths, BORDER_MIDDLE));
+      this.numberOfMiddleBorders++;
+    }
+
+    this.body.forEach((row, index) => {
+      const isSelected = index + this.header.length === selectedIndex;
+
+      if (isSelected) {
+        this.selectedRow = row;
       }
-    );
+
+      lines.push(
+        this.getTableRow(
+          this.getCells(row, isSelected),
+          isSelected ? BODY_ROW_ACTIVE : BODY_ROW
+        )
+      );
+    });
+
+    if (this.footer.length) {
+      lines.push(this.getTableBorder(this.widths, BORDER_MIDDLE));
+      this.numberOfMiddleBorders++;
+    }
+
+    this.footer.forEach((row) => {
+      lines.push(this.getTableRow(this.getCells(row), FOOTER_ROW));
+    });
+
+    lines.push(this.getTableBorder(this.widths, BORDER_BOTTOM));
 
     return lines;
   }
 
-  private addRow = (lines: string[], row: Row, isSelected: boolean) => {
-    const cells = row.cells.map((it, idx) => {
+  private getCells = (row: Row, isSelected = false) =>
+    row.cells.map((it, idx) => {
       if (idx === 0) {
         return this.getName(row, it, isSelected);
       }
 
       return it;
     });
-
-    switch (true) {
-      case row.param.type === RowType.HEADER:
-        const header = [
-          this.getTableBorder(cells, BORDER_TOP),
-          this.getTableRow(cells, HEADER_ROW),
-          this.getTableBorder(cells, BORDER_MIDDLE),
-        ];
-
-        this.headerSize = header.length;
-        this.numberOfBodyBorders++;
-
-        lines.push(...header);
-        break;
-
-      case row.param.type === RowType.FOOTER:
-        const footer = [
-          this.getTableBorder(cells, BORDER_MIDDLE),
-          this.getTableRow(cells, FOOTER_ROW),
-          this.getTableBorder(cells, BORDER_BOTTOM),
-        ];
-
-        this.footerSize = footer.length;
-        this.numberOfBodyBorders++;
-
-        lines.push(...footer);
-        break;
-
-      case isSelected:
-        lines.push(this.getTableRow(cells, BODY_ROW_ACTIVE));
-        break;
-
-      default:
-        lines.push(this.getTableRow(cells, BODY_ROW));
-    }
-  };
 
   private getName = (row: Row, cell: string, isSelected: boolean) => {
     const toggle = row.param.isExpanded ? Symbol.collapse : Symbol.expand;
@@ -103,7 +100,7 @@ export class Table {
   };
 
   private getTableBorder = (
-    cells: string[],
+    widths: number[],
     {
       left,
       center,
@@ -111,10 +108,10 @@ export class Table {
       horizontal,
     }: { left: string; center: string; right: string; horizontal: string }
   ) =>
-    cells.reduce(
+    widths.reduce(
       (acc, it, idx, data) =>
         acc +
-        horizontal.repeat(it.length) +
+        horizontal.repeat(it) +
         (idx === data.length - 1 ? right : center),
       left
     );
@@ -175,27 +172,49 @@ export class Table {
   };
 
   private flattenTree = (tree: Node[], isUpdateFlatNodes: boolean) => {
-    if (isUpdateFlatNodes) {
-      this.flatNodes = [];
+    if (!isUpdateFlatNodes) {
+      return;
+    }
 
-      const traverse = (nodes: Node[], depth: number) => {
-        for (const node of nodes) {
-          this.flatNodes.push({
+    this.header = [];
+    this.body = [];
+    this.footer = [];
+
+    const traverse = (nodes: Node[], depth: number) => {
+      for (const node of nodes) {
+        if (node.param.type === RowType.HEADER) {
+          this.header.push({
             cells: node.cells,
             hasChildrens: !!node.children?.length,
             depth: depth ?? 0,
             param: node.param,
           });
-
-          if (node.param.isExpanded && node.children?.length) {
-            traverse(node.children, depth + 1);
-          }
         }
-      };
 
-      traverse(tree, 0);
-    }
+        if (node.param.type === RowType.BODY) {
+          this.body.push({
+            cells: node.cells,
+            hasChildrens: !!node.children?.length,
+            depth: depth ?? 0,
+            param: node.param,
+          });
+        }
 
-    return this.flatNodes;
+        if (node.param.type === RowType.FOOTER) {
+          this.footer.push({
+            cells: node.cells,
+            hasChildrens: !!node.children?.length,
+            depth: depth ?? 0,
+            param: node.param,
+          });
+        }
+
+        if (node.param.isExpanded && node.children?.length) {
+          traverse(node.children, depth + 1);
+        }
+      }
+    };
+
+    traverse(tree, 0);
   };
 }

@@ -1,6 +1,6 @@
 import { NodeBoundary } from "../config";
 import { ITree, LogEntry, Node, RowType } from "../types";
-import { calculateDuration } from "../utils/date";
+import { calculateDuration, formatDuration } from "../utils/date";
 
 export class Tree implements ITree {
   public root: Node[] = [];
@@ -50,12 +50,37 @@ export class Tree implements ITree {
     const firstLog = logs[0];
     const lastLog = logs[logs.length - 1];
 
-    const node = {
+    const checkAtollLocalSession = logs.filter(
+      (it) => it.name === "checkAtollLocalSession"
+    );
+    const printReceipt = logs.filter((it) => it.name === "printReceipt");
+
+    const checkAtollLocalSessionStart = checkAtollLocalSession.find(
+      (it) => it.value === "start"
+    );
+
+    const checkAtollLocalSessionEnd = checkAtollLocalSession.find(
+      (it) => it.value === "end"
+    );
+
+    const printReceiptStart = printReceipt.find((it) => it.value === "start");
+    const printReceiptEnd = printReceipt.find((it) => it.value === "end");
+
+    this.root.push({
       cells: [
-        "Всего:",
-        firstLog.dateTime,
-        lastLog.dateTime,
-        calculateDuration(firstLog.dateTime, lastLog.dateTime),
+        "Всего времени на ФР:",
+        "",
+        "",
+        formatDuration(
+          calculateDuration(
+            checkAtollLocalSessionStart?.dateTime,
+            checkAtollLocalSessionEnd?.dateTime
+          ) +
+            calculateDuration(
+              printReceiptStart?.dateTime,
+              printReceiptEnd?.dateTime
+            )
+        ),
         "",
       ],
       param: {
@@ -63,9 +88,22 @@ export class Tree implements ITree {
         isExpanded: false,
         type: RowType.FOOTER,
       },
-    };
+    });
 
-    this.root.push(node);
+    this.root.push({
+      cells: [
+        "Всего:",
+        firstLog.dateTime,
+        lastLog.dateTime,
+        formatDuration(calculateDuration(firstLog.dateTime, lastLog.dateTime)),
+        "",
+      ],
+      param: {
+        id: this.currentIndex++,
+        isExpanded: false,
+        type: RowType.FOOTER,
+      },
+    });
   };
 
   private handleStartLog = (log: LogEntry, stack: Node[]): void => {
@@ -90,7 +128,9 @@ export class Tree implements ITree {
     if (!node) return;
 
     node.cells[2] = log.dateTime;
-    node.cells[3] = calculateDuration(node.cells[1], node.cells[2]);
+    node.cells[3] = formatDuration(
+      calculateDuration(node.cells[1], node.cells[2])
+    );
   };
 
   private handleOtherLog = (log: LogEntry, stack: Node[]): void => {
